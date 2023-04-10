@@ -12,19 +12,19 @@ build_property.PlatformNeutralAssembly =
 build_property.EnforceExtendedAnalyzerRules = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = ToucanUI
-build_property.ProjectDir = C:\Users\lokir\Documents\Programming\ToucanModManager\
+build_property.ProjectDir = E:\Projects\Toucan\ToucanModManager\
 
-[C:/Users/lokir/Documents/Programming/ToucanModManager/App.axaml]
+[E:/Projects/Toucan/ToucanModManager/App.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
-[C:/Users/lokir/Documents/Programming/ToucanModManager/Icons.axaml]
+[E:/Projects/Toucan/ToucanModManager/Icons.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
-[C:/Users/lokir/Documents/Programming/ToucanModManager/Views/HeaderView.axaml]
+[E:/Projects/Toucan/ToucanModManager/Views/HeaderView.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
-[C:/Users/lokir/Documents/Programming/ToucanModManager/Views/MainWindow.axaml]
+[E:/Projects/Toucan/ToucanModManager/Views/MainWindow.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
-[C:/Users/lokir/Documents/Programming/ToucanModManager/Views/ModlistView.axaml]
+[E:/Projects/Toucan/ToucanModManager/Views/ModlistView.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml

@@ -1,6 +1,9 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Net;
+using System.Net.Http;
+
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,6 +26,7 @@ namespace ToucanAPI.Spacedock
             dynamic SpacedockContentJson = JsonConvert.DeserializeObject(SpacedockContent)
                 ?? throw new Exception("Failed to convert SpacedockContent to JSON. I dont know why.");
 
+            // Populating
             _MIToucan.ModificationName = GetJsonMIStringFromPath(_MIToucan.ModificationName, SpacedockContentJson, "name");
 
             return _MIToucan;

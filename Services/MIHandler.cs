@@ -1,5 +1,8 @@
-﻿using ToucanAPI.Data;
-using static System.Net.WebRequestMethods;
+﻿using System;
+using System.Net;
+using System.Threading.Tasks;
+
+using ToucanAPI.Data;
 
 namespace ToucanAPI
 {
@@ -456,7 +459,6 @@ namespace ToucanAPI
             public MIString ModificatioGameName { get; set; }
             public MIString ModificationInstallationPath { get; set; }
 
-
             public MIToucan(MIToucanCreateInfo CreateInfo)
             {
                 this.MIToucanCreateInfo = CreateInfo;
@@ -482,6 +484,11 @@ namespace ToucanAPI
         {
             
         }
+
+        public struct MIToucanInstallProgress
+        {
+
+        }
     }
 
     public static class ToucanUtilities
@@ -496,7 +503,7 @@ namespace ToucanAPI
         }
     }
 
-    class Program
+    class MIHandler
     {
         static async Task<int> Main(string[] args)
         {
