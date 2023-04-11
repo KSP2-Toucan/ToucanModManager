@@ -5,9 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using ToucanAPI.Data;
 
-namespace ToucanAPI.ToucanAPI 
+namespace ToucanClient.Toucan
 {
-    public static class TToucanAPI // Obviously the best
+    public static class MIToucanAPI
     {
         public async static Task<MIToucan> PopulateMIToucan(MIToucan _MIToucan)
         {

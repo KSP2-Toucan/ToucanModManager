@@ -1,136 +1,27 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Net;
 using System.Threading.Tasks;
 
 using ToucanAPI.Data;
+using ToucanAPI.ToucanAPI;
+using ToucanClient.Github;
+using ToucanClient.Spacedock;
+using ToucanClient.Toucan;
+using ToucanUI.Services;
 
 namespace ToucanAPI
 {
     namespace Data
     {
-        /* General */
+        /* Enums */
 
-        public enum API
+        public enum InstallType
         {
-            TOUCANAPI,
+            TOUCAN,
             GITHUB,
             SPACEDOCK,
         };
-
-        
-        public enum MIBrowserFilter // I swear mom these are not from reddit
-        {
-            TOP,
-            HOT,
-            NEW,
-            BEST
-        };
-
-        public enum MIBrowserTime
-        {
-            ALLTIME,
-            THISYEAR,
-            THISMONTH,
-            THISWEEK,
-            TODAY
-        };
-
-        public struct SVersion
-        {
-            public UInt16 Major; // X.n.n
-            public UInt16 Minor; // n.X.n
-            public UInt16 Patch; // n.n.X
-
-            public string Before;// <string>n.n.n
-            public string After; // n.n.n<string>
-
-            public SVersion(UInt16 _Major, UInt16 _Minor, UInt16 _Patch)
-            {
-                this.Major = _Major;
-                this.Minor = _Minor;
-                this.Patch = _Patch;
-
-                this.Before = "";
-                this.After = "";
-            }
-
-            public SVersion(UInt16 _Major, UInt16 _Minor, UInt16 _Patch, string _After)
-            {
-                this.Major = _Major;
-                this.Minor = _Minor;
-                this.Patch = _Patch;
-
-                this.Before = "";
-                this.After = _After;
-            }
-
-            public SVersion(string _Before, UInt16 _Major, UInt16 _Minor, UInt16 _Patch)
-            {
-                this.Major = _Major;
-                this.Minor = _Minor;
-                this.Patch = _Patch;
-
-                this.Before = _Before;
-                this.After = "";
-            }
-
-            public SVersion(string _Before, UInt16 _Major, UInt16 _Minor, UInt16 _Patch, string _After)
-            {
-                this.Major = _Major;
-                this.Minor = _Minor;
-                this.Patch = _Patch;
-
-                this.Before = _Before;
-                this.After = _After;
-            }
-
-            public override string ToString()
-            {
-                return $"{this.Major}.{this.Minor}.{this.Patch}";
-            }
-        }
-
-        public struct GithubInformation
-        {
-            public string RepositoryOwner { get; set; }
-            public string RepositoryName { get; set; }
-            public string RepositoryTag { get; set; }
-
-            public GithubInformation(string _RepositoryOwner, string _RepositoryName)
-            {
-                this.RepositoryOwner = _RepositoryOwner;
-                this.RepositoryName = _RepositoryName;
-                this.RepositoryTag = "";
-            }
-
-            public GithubInformation(string _RepositoryOwner, string _RepositoryName, string _RepositoryTag)
-            {
-                this.RepositoryOwner = _RepositoryOwner;
-                this.RepositoryName = _RepositoryName;
-                this.RepositoryTag = _RepositoryTag;
-            }
-
-            public string GetGithubUrl()
-            {
-                if (RepositoryTag.Length != 0) // It is an release
-                    return $"https://github.com/{RepositoryOwner}/{RepositoryName}/releases/tag/{RepositoryTag}";
-                else // Is is not
-                    return $"https://github.com/{RepositoryOwner}/{RepositoryName}";
-            }
-
-            public string GetGihubApiUrl()
-            {
-                if (RepositoryTag.Length != 0) // It is an release
-                    return $"https://api.github.com/repos/{RepositoryOwner}/{RepositoryName}/releases/tags/{RepositoryTag}";
-                else // Is is not
-                    return $"https://api.github.com/repos/{RepositoryOwner}/{RepositoryName}";
-            }
-
-            public override string ToString()
-            {
-                return GetGithubUrl();
-            }
-        }
 
         /* Text */
 
@@ -345,8 +236,146 @@ namespace ToucanAPI
             }
         }
 
-        /* Other Modification Information structs */
+        /* Modification Information structs */
 
+        /// <summary>
+        /// This struct contains all the information for installing from github. If InstallType is set to Github you will 
+        /// need to set the values of MIGithubInstall too. The owner, name and tag of the repository is required.
+        /// </summary>
+        public struct MIGithubInstall
+        {
+            public string RepositoryOwner { get; }
+            public string RepositoryName { get; }
+            public string RepositoryTag { get; }
+
+            public MIGithubInstall(string _RepositoryOwner, string _RepositoryName, string _RepositoryTag)
+            {
+                this.RepositoryOwner = _RepositoryOwner;
+                this.RepositoryName = _RepositoryName;
+                this.RepositoryTag = _RepositoryTag;
+            }
+
+            public string GetGithubUrl()
+            {
+                return $"https://github.com/{RepositoryOwner}/{RepositoryName}/releases/tag/{RepositoryTag}";
+            }
+
+            public string GetGihubApiUrl()
+            {
+                return $"https://api.github.com/repos/{RepositoryOwner}/{RepositoryName}/releases/tags/{RepositoryTag}";
+            }
+
+            public override string ToString()
+            {
+                return GetGithubUrl();
+            }
+        }
+
+        public struct MISpacedockInstall
+        {
+
+        }
+
+        public struct MIToucanInstall
+        {
+
+        }
+
+        /// <summary>
+        /// Modification Information in a semantic version format. This might need a rework soon though.
+        /// </summary>
+        public struct MISVersion
+        {
+            public UInt16 Major; // X.n.n
+            public UInt16 Minor; // n.X.n
+            public UInt16 Patch; // n.n.X
+
+            public string Label; // n.n.n-<Label>
+            public string Build; // n.n.n-<Label>+<Build>
+
+            public string VersionOverride;
+
+            public MISVersion(UInt16 _Major, UInt16 _Minor, UInt16 _Patch)
+            {
+                this.Major = _Major;
+                this.Minor = _Minor;
+                this.Patch = _Patch;
+
+                this.Label = "";
+                this.Build = "";
+
+                this.VersionOverride = "";
+            }
+
+            public MISVersion(UInt16 _Major, UInt16 _Minor, UInt16 _Patch, string _Label)
+            {
+                this.Major = _Major;
+                this.Minor = _Minor;
+                this.Patch = _Patch;
+
+                this.Label = _Label;
+                this.Build = "";
+
+                this.VersionOverride = "";
+            }
+
+            public MISVersion(UInt16 _Major, UInt16 _Minor, UInt16 _Patch, string _Label, string _Build)
+            {
+                this.Major = _Major;
+                this.Minor = _Minor;
+                this.Patch = _Patch;
+
+                this.Label = _Label;
+                this.Build = _Build;
+
+                this.VersionOverride = "";
+            }
+
+            public MISVersion(string _VersionOverride)
+            {
+                this.Major = 0;
+                this.Minor = 0;
+                this.Patch = 0;
+
+                this.Label = "";
+                this.Build = "";
+
+                this.VersionOverride = _VersionOverride;
+            }
+
+            public override string ToString()
+            {
+                if (!string.IsNullOrEmpty(VersionOverride)) return VersionOverride;
+                else if (string.IsNullOrEmpty(Label) && string.IsNullOrEmpty(Build)) return $"{this.Major}.{this.Minor}.{this.Patch}";                                  // We dont have label or build
+                else if (!string.IsNullOrEmpty(Label) && string.IsNullOrEmpty(Build)) return $"{this.Major}.{this.Minor}.{this.Patch}-{this.Label}";                    // We dont have build
+                else if (string.IsNullOrEmpty(Label) && !string.IsNullOrEmpty(Build)) return $"{this.Major}.{this.Minor}.{this.Patch}+{this.Build}";                    // We dont have label
+                else if (!string.IsNullOrEmpty(Label) && !string.IsNullOrEmpty(Build)) return $"{this.Major}.{this.Minor}.{this.Patch}-{this.Label}+{this.Build}";      // We have build and label
+                else return (Label + " " + Build);
+            }
+        }
+
+        public struct MIVersion
+        {
+            public MISVersion ModificationSemanticVersion { get; set; }
+            public string? ModificationDownload { get; set; }
+        }
+
+        public struct MIVersionA
+        {
+            public MIVersion[] ModificationVersions { get; set; }
+            public bool isRequired { get; }
+
+            public MIVersionA(bool _isRequired)
+            {
+                this.isRequired = _isRequired;
+                this.ModificationVersions = new MIVersion[0];
+            }
+        }
+
+        /// <summary>
+        /// This struct contains all the information about the author. The LinkedIn was a joke but I 
+        /// cannot go back now.
+        /// </summary>
         public struct MIAuthor
         {
             public string AuthorName { get; set; }
@@ -392,6 +421,11 @@ namespace ToucanAPI
             }
         }
 
+        /// <summary>
+        /// This is a Modification Information Author Array. Contains if its required or not and the array 
+        /// of authors. Makes it easier for me as a developer to work with authors, and makes it a 
+        /// possibility for there to easily be multiple authors.
+        /// </summary>
         public struct MIAuthorA
         {
             public MIAuthor[] Authors { get; set; }
@@ -427,9 +461,15 @@ namespace ToucanAPI
             }
         }
 
+        /// <summary>
+        /// This is a create info struct, and yes, this style of creating structs is taken right from 
+        /// the khronos group's vulkan. This struct contains a InstallType for wether the information comes 
+        /// from spacedock, toucan or github, and this is needed because there is different information we 
+        /// need to reference based which website it is installed from.
+        /// </summary>
         public struct MIToucanCreateInfo
         {
-            public API API { get; set; } // Probably a better way of doing this
+            public InstallType InstallType { get; set; } // Probably a better way of doing this
 
             /* ToucanAPI */
 
@@ -437,7 +477,7 @@ namespace ToucanAPI
 
             /* Github */
 
-            public GithubInformation GithubInformation { get; set; }
+            public MIGithubInstall GithubInstallInformation { get; set; }
 
             /* Spacedock */
 
@@ -445,59 +485,119 @@ namespace ToucanAPI
 
         }
 
+        /// <summary>
+        /// This is the struct which contains will contain all the data about a mod. This struct is 
+        /// what you want to reference wach time you need information about a mod. Just pair it 
+        /// with the create info which should point the initializer to the correct mod and you 
+        /// will, after a little bit of time, have a bit of information about the specified mod.
+        /// </summary>
         public struct MIToucan
         {
-            public MIToucanCreateInfo MIToucanCreateInfo { get; }
+            /* Metadata Specifications */
+
+            public UInt32 MetadataVersion { get; set; }
+
+            /* File Specifications */
+
+            public InstallType InstallType { get; set; }
+            public MIString InstallPath { get; set; }
+            public MIString InstallerPath { get; set; }
+            public MIString SourceCode { get; set; }
+
+            /* Github Install Information */
+            public MIGithubInstall? GithubInstallInformation { get; set; }
+
+            /* Toucan Install Information */
+            public MIUInt64 ToucanModificationId { get; set; }
+
+            /* Spacedock Install Information */
+            public MIUInt64 SpacedockModificationId { get; set; }
+
+            /* Modification Specifications */
 
             public MIString ModificationName { get; set; }
-            public MIString ModificationVersion { get; set; } // TODO : Replace with SVersion in the future
+            public MIVersionA ModificationVersions { get; set; }
             public MIString ModificationDescriptionShort { get; set; }
             public MIString ModificationDescriptionLong { get; set; }
-            public MIUInt64 ModificationSize { get; set; }
-            public MIString ModificationLicense { get; set; } // TODO : Replace with MILicense in the future
+            public MIStringA ModificationTags { get; set; }
+
+            /* Publicity */
+
             public MIAuthorA ModificationAuthors { get; set; }
-            public MIString ModificatioGameName { get; set; }
-            public MIString ModificationInstallationPath { get; set; }
+            public MIString ModificationWebsite { get; set; }
+            public MIString ModificationDonation { get; set; }
+            public MIString ModificationLicense { get; set; }
 
-            public MIToucan(MIToucanCreateInfo CreateInfo)
+            /* Statistics */
+
+            /* Github */
+            public MIUInt32 GithubStars { get; set; }
+
+            /* Spacedock */
+            public MIUInt32 SpacedockDownloads { get; set; }
+            public MIUInt32 SpacedockFollowers { get; set; }
+
+            /* Toucan */
+            public MIUInt32 ToucanDownloads { get; set; }
+            public MIUInt32 ToucanUpvotes { get; set; }
+            public MIUInt32 ToucanDownvotes { get; set; }
+
+            /// <summary>
+            /// Constructor for the MIToucan struct. This is an important function so I would recommend you reading 
+            /// through it. It sets all the information from the MIToucanCreateInfo to the required places and 
+            /// then defines which variables that is required and which variables that is not.
+            /// </summary>
+            /// <param name="ToucanCreateInfo"></param>
+            public MIToucan(MIToucanCreateInfo ToucanCreateInfo)
             {
-                this.MIToucanCreateInfo = CreateInfo;
+                /* Create Info */
 
-                this.ModificationName                       = new MIString(true);       // Required
-                this.ModificationVersion                    = new MIString(true);       // Required
-                this.ModificationDescriptionShort           = new MIString(false);
-                this.ModificationDescriptionLong            = new MIString(false);
-                this.ModificationSize                       = new MIUInt64(0, true);    // Required
-                this.ModificationAuthors                    = new MIAuthorA(true);      // Required
-                this.ModificationLicense                    = new MIString(true);       // Required
-                this.ModificatioGameName                    = new MIString(true);       // Required
-                this.ModificationInstallationPath           = new MIString(false);
+                InstallType = ToucanCreateInfo.InstallType;
+                ToucanModificationId = new MIUInt64(ToucanCreateInfo.InstallType == InstallType.TOUCAN ? ToucanCreateInfo.ToucanModificationId : 0, true); // Sets to required, but if InstallType isnt set to toucan it will just be ignored.
+                GithubInstallInformation = ToucanCreateInfo.InstallType == InstallType.GITHUB ? ToucanCreateInfo.GithubInstallInformation : null; // I can't really set this to required or not, but it will throw errors if some values is empty.
+                SpacedockModificationId = new MIUInt64(ToucanCreateInfo.InstallType == InstallType.SPACEDOCK ? ToucanCreateInfo.SpacedockModificationId : 0, true); // Same with this one as it was with the ToucanModId
+
+                /* Other */
+
+                MetadataVersion = new UInt32();             // Doesnt really have a set required or not, but errors will be thrown if this value is set or not
+                InstallPath = new MIString(false);      // Although you may think that this should be true, it just defaults to the BepInEx plugin if its empty or equal to 'DEFAULT'
+                InstallerPath = new MIString(false);      // The installer is a python script that can do other things. The mod author has to create this himself. Can do things as create a new folder in the root directory to store models, like saberfactory for beatsaber.
+                SourceCode = new MIString(false);      // Link to where you can take a look at the source code.
+                ModificationName = new MIString(true);       // Required, self explainatory
+                ModificationVersions = new MIVersionA(true);     // Required, but it only needs one version.
+                ModificationDescriptionShort = new MIString(true);       // Required, the user needs to know a little about the mod.
+                ModificationDescriptionLong = new MIString(false);      // Not required, the short description should be enough
+                ModificationTags = new MIStringA(false);     // You dont NEED tags, but its really useful and can help with a kond of SEO
+                ModificationAuthors = new MIAuthorA(true);      // Required, need at least one author
+                ModificationWebsite = new MIString(false);
+                ModificationDonation = new MIString(false);
+                ModificationLicense = new MIString(true);       // Required, I am not a lawyer, but probaly some legal issues if I dont
+
+                GithubStars = new MIUInt32(false);      // Since the search feature isnt up yet I think its a bad time to make this required
+                SpacedockDownloads = new MIUInt32(false);      // ---------- | | ----------
+                SpacedockFollowers = new MIUInt32(false);      // ---------- | | ----------
+                ToucanDownloads = new MIUInt32(false);      // ---------- | | ----------
+                ToucanUpvotes = new MIUInt32(false);      // ---------- | | ----------
+                ToucanDownvotes = new MIUInt32(false);      // ---------- | | ----------
             }
 
             public override string ToString()
             {
-                return this.ModificationName.Value;
+                return ModificationName.Value;
             }
-        }
-
-        public struct MIToucanBrowser
-        {
-            
-        }
-
-        public struct MIToucanInstallProgress
-        {
-
         }
     }
 
+    /// <summary>
+    /// This class will be merged with MIHandler soon, since it doesnt just work with Toucan.
+    /// </summary>
     public static class ToucanUtilities
     {
         public static async Task<MIToucan> PopulateMIToucan(MIToucan _MIToucan)
         {
-            if          (_MIToucan.MIToucanCreateInfo.API == API.TOUCANAPI)    _MIToucan = await ToucanAPI.TToucanAPI.PopulateMIToucan  (_MIToucan);
-            else if     (_MIToucan.MIToucanCreateInfo.API == API.SPACEDOCK)    _MIToucan = await Spacedock.TSpacedock.PopulateMIToucan  (_MIToucan);
-            else if     (_MIToucan.MIToucanCreateInfo.API == API.GITHUB)       _MIToucan = await Github.TGithub.PopulateMIToucan        (_MIToucan);
+            if (_MIToucan.InstallType == InstallType.TOUCAN) _MIToucan = await MIToucanAPI.PopulateMIToucan(_MIToucan);
+            else if (_MIToucan.InstallType == InstallType.SPACEDOCK) _MIToucan = await MISpacedockAPI.PopulateMIToucan(_MIToucan);
+            else if (_MIToucan.InstallType == InstallType.GITHUB) _MIToucan = await MIGithubAPI.PopulateMIToucan(_MIToucan);
 
             return _MIToucan;
         }
@@ -505,23 +605,18 @@ namespace ToucanAPI
 
     class MIHandler
     {
-        static async Task<int> Main(string[] args)
-        {
-            //Data.MIToucanCreateInfo CreateInfo = new Data.MIToucanCreateInfo();
-            //CreateInfo.API = Data.API.GITHUB;
-            //CreateInfo.GithubInformation = new GithubInformation("KSP2-Toucan", "Toucan-Mod", "0.0.2");
+        //public static async Task<int> Main(string[] Args)
+        //{
+        //    MIToucanCreateInfo SpacedockCreateInfo = new MIToucanCreateInfo();
+        //    SpacedockCreateInfo.InstallType = InstallType.SPACEDOCK;
+        //    SpacedockCreateInfo.SpacedockModificationId = 21;
 
-            //Data.MIToucan MIToucan = new Data.MIToucan(CreateInfo);
-            //MIToucan = await ToucanUtilities.PopulateMIToucan(MIToucan);
+        //    MIToucan SpacedockMIToucan = new MIToucan(SpacedockCreateInfo);
+        //    SpacedockMIToucan = await ToucanUtilities.PopulateMIToucan(SpacedockMIToucan);
 
-            Data.MIToucanCreateInfo CreateInfo = new Data.MIToucanCreateInfo();
-            CreateInfo.API = Data.API.SPACEDOCK;
-            CreateInfo.SpacedockModificationId = 21;
+        //    Console.WriteLine(JObject.FromObject(SpacedockMIToucan).ToString());
 
-            Data.MIToucan MIToucan = new Data.MIToucan(CreateInfo);
-            MIToucan = await ToucanUtilities.PopulateMIToucan(MIToucan);
-
-            return 0;
-        }
+        //    return 0;
+        //}
     }
 }

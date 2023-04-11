@@ -16,26 +16,27 @@ using System.Threading.Tasks;
 using ToucanAPI.Data;
 using System.IO;
 
-namespace ToucanAPI.Github
+
+namespace ToucanClient.Github
 {
-    public static class TGithub
+    internal class MIGithubAPI
     {
         public static async Task<MIToucan> PopulateMIToucan(MIToucan _MIToucan)
         {
-            string ToucanModManagerGetUrl = _MIToucan.MIToucanCreateInfo.GithubInformation.GetGihubApiUrl();
-            HttpClient ToucanModManagerHttpClient = new HttpClient();
-            ToucanModManagerHttpClient.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:93.0; mm:Toucan-Mod-Manager;) Gecko/20100101 Firefox/93.0");
+            //string ToucanModManagerGetUrl = _MIToucan.MIToucanCreateInfo.GithubInformation.GetGihubApiUrl();
+            //HttpClient ToucanModManagerHttpClient = new HttpClient();
+            //ToucanModManagerHttpClient.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:93.0; mm:Toucan-Mod-Manager;) Gecko/20100101 Firefox/93.0");
 
-            dynamic ToucanGithubApiResponseData = await FetchToucanModData(ToucanModManagerHttpClient, ToucanModManagerGetUrl);
-            JObject ToucanMetadata = await TryGetToucanMetadata(ToucanGithubApiResponseData, ToucanModManagerHttpClient);
+            //dynamic ToucanGithubApiResponseData = await FetchToucanModData(ToucanModManagerHttpClient, ToucanModManagerGetUrl);
+            //JObject ToucanMetadata = await TryGetToucanMetadata(ToucanGithubApiResponseData, ToucanModManagerHttpClient);
 
-            _MIToucan.ModificationName                  = GetJsonMIStringFromPath(_MIToucan.ModificationName, ToucanMetadata, "tmm-metadata.mod-specifications.mod_name");
-            _MIToucan.ModificationVersion               = GetJsonMIStringFromPath(_MIToucan.ModificationVersion, ToucanMetadata, "tmm-metadata.mod-specifications.mod_version");
-            _MIToucan.ModificationDescriptionShort      = GetJsonMIStringFromPath(_MIToucan.ModificationDescriptionShort, ToucanMetadata, "tmm-metadata.mod-specifications.mod_description.short");
-            _MIToucan.ModificationDescriptionLong       = GetJsonMIStringFromPath(_MIToucan.ModificationDescriptionLong, ToucanMetadata, "tmm-metadata.mod-specifications.mod_description.long");
-            _MIToucan.ModificationAuthors               = GetJsonMIAuthorAFromPath(_MIToucan.ModificationAuthors, ToucanMetadata, "tmm-metadata.mod-specifications.mod_authors");
-            _MIToucan.ModificationLicense               = GetJsonMIStringFromPath(_MIToucan.ModificationLicense, ToucanMetadata, "tmm-metadata.mod-specifications.license");
-            _MIToucan.ModificationInstallationPath      = GetJsonMIStringFromPath(_MIToucan.ModificationInstallationPath, ToucanMetadata, "tmm-metadata.mod-specifications.install_path"); 
+            //_MIToucan.ModificationName                  = GetJsonMIStringFromPath(_MIToucan.ModificationName, ToucanMetadata, "tmm-metadata.mod-specifications.mod_name");
+            //_MIToucan.ModificationVersion               = GetJsonMIStringFromPath(_MIToucan.ModificationVersion, ToucanMetadata, "tmm-metadata.mod-specifications.mod_version");
+            //_MIToucan.ModificationDescriptionShort      = GetJsonMIStringFromPath(_MIToucan.ModificationDescriptionShort, ToucanMetadata, "tmm-metadata.mod-specifications.mod_description.short");
+            //_MIToucan.ModificationDescriptionLong       = GetJsonMIStringFromPath(_MIToucan.ModificationDescriptionLong, ToucanMetadata, "tmm-metadata.mod-specifications.mod_description.long");
+            //_MIToucan.ModificationAuthors               = GetJsonMIAuthorAFromPath(_MIToucan.ModificationAuthors, ToucanMetadata, "tmm-metadata.mod-specifications.mod_authors");
+            //_MIToucan.ModificationLicense               = GetJsonMIStringFromPath(_MIToucan.ModificationLicense, ToucanMetadata, "tmm-metadata.mod-specifications.license");
+            //_MIToucan.ModificationInstallationPath      = GetJsonMIStringFromPath(_MIToucan.ModificationInstallationPath, ToucanMetadata, "tmm-metadata.mod-specifications.install_path"); 
 
             return _MIToucan;
         }
@@ -66,12 +67,12 @@ namespace ToucanAPI.Github
             throw new Exception("'TMM-METADATA.json' was not found in github repo or release. If this is your mod remember to attach the TMM-METADATA json as a binary when creaing a release and if have the json in root if its a repo.");
         }
 
-        private async static Task<dynamic> FetchToucanModData(HttpClient ToucanModManagerHttpClient, string ToucanModManagerGetUrl) 
+        private async static Task<dynamic> FetchToucanModData(HttpClient ToucanModManagerHttpClient, string ToucanModManagerGetUrl)
         {
             HttpResponseMessage ToucanModManagerGetResponse = await ToucanModManagerHttpClient.GetAsync(ToucanModManagerGetUrl);
             ToucanModManagerGetResponse.EnsureSuccessStatusCode();
             string ToucanModManagerGetResponseContent = await ToucanModManagerGetResponse.Content.ReadAsStringAsync();
-            dynamic ToucanModManagerGetResponseContentJSON = JsonConvert.DeserializeObject<JObject>(ToucanModManagerGetResponseContent) 
+            dynamic ToucanModManagerGetResponseContentJSON = JsonConvert.DeserializeObject<JObject>(ToucanModManagerGetResponseContent)
                 ?? throw new Exception("JObject TouanModManagerGetResponseContentJSON is null. This may be because it didnt find ");
 
             return ToucanModManagerGetResponseContentJSON;
