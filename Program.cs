@@ -1,6 +1,7 @@
 ﻿using Avalonia;
 using Avalonia.ReactiveUI;
 using System;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using ToucanAPI.Data;
 using ToucanAPI;
@@ -18,7 +19,7 @@ namespace ToucanUI
         public static async Task<int> Main(string[] args)
         {
             // Add this line to unhide the console window
-            //AllocConsole();
+            AllocConsole();
 
             BuildAvaloniaApp()
                 .StartWithClassicDesktopLifetime(args);

@@ -4,7 +4,6 @@ using System.Net;
 using System.Threading.Tasks;
 
 using ToucanAPI.Data;
-using ToucanAPI.ToucanAPI;
 using ToucanClient.Github;
 using ToucanClient.Spacedock;
 using ToucanClient.Toucan;
