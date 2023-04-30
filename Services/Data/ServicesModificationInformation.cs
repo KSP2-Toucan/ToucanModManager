@@ -20,10 +20,19 @@ namespace ToucanServices.Data
     public struct ModVersionElement
     {
         [JsonProperty("mod_version")]
-        public SemanticVersion ModVersion { get; set; }
+        public Versioning.Version ModVersion { get; set; }
 
         [JsonProperty("game_version")]
-        public SemanticVersion GameVersion { get; set; }
+        public Versioning.Version GameVersion { get; set; }
+
+        [JsonProperty("download_path")]
+        public string DownloadUrl { get; set; }
+
+        [JsonProperty("changelog")]
+        public string Changelog { get; set; }
+
+        [JsonProperty("downloads")]
+        public UInt32 Downloads { get; set; }
     }
 
     public struct ModDescription

@@ -11,7 +11,7 @@ namespace ToucanServices.Data
         public UInt32 PageAmount { get; set; }
 
         [JsonProperty("per_page_amount")]
-        public UInt32 PrePageAmount { get; set; }
+        public UInt32 PerPageAmount { get; set; }
 
         [JsonProperty("page_index")]
         public UInt32 PageIndex { get; set; }

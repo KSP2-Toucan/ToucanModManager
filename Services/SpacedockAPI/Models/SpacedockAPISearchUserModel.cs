@@ -1,13 +1,13 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ToucanServices.ToucanAPI
+namespace ToucanServices.SpacedockAPI.Models
 {
-    public static class ToucanAPIRetreiveModificationInformation
+    public struct SpacedockAPISearchUserModel
     {
+
     }
 }

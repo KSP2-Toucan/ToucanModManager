@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-
+using ToucanServices.Data;
 using ToucanServices.SpacedockAPI.Models;
 
 namespace ToucanServices.SpacedockAPI
@@ -32,11 +32,18 @@ namespace ToucanServices.SpacedockAPI
 
             Data.ModSpecs ModSpecs = new Data.ModSpecs();
             ModSpecs.ModName = Model.Name;
+            ModSpecs.ModId = Model.Id.ToString();
             ModSpecs.ModVersionElements = new List<Data.ModVersionElement>();
             for (int i = 0; i < Model.Versions.Length; i++)
             {
-                Data.SemanticVersion NewModVersion = new Data.SemanticVersion(Model.Versions[i].FriendlyVersion);
-                Data.SemanticVersion NewGameVersion = new Data.SemanticVersion(Model.Versions[i].GameVersion);
+                Data.Versioning.VersionCreateInfo NewModVersionCreateInfo = new Data.Versioning.VersionCreateInfo(Data.Versioning.VersioningType.Arbitrary);
+                NewModVersionCreateInfo.ArbitraryVersion = Model.Versions[i].FriendlyVersion;
+                NewModVersionCreateInfo.Date = DateTimeOffset.Parse(Model.Versions[i].Created);
+
+                Data.Versioning.VersionCreateInfo NewGameVersionCreateInfo = Data.Versioning.Convert.FromString(Model.Versions[i].GameVersion);
+                
+                Data.Versioning.Version NewModVersion = new Data.Versioning.Version(NewModVersionCreateInfo);
+                Data.Versioning.Version NewGameVersion = new Data.Versioning.Version(NewGameVersionCreateInfo);
 
                 Data.ModVersionElement NewModVersionElement = new Data.ModVersionElement();
                 NewModVersionElement.ModVersion = NewModVersion;
@@ -44,6 +51,12 @@ namespace ToucanServices.SpacedockAPI
 
                 ModSpecs.ModVersionElements.Add(NewModVersionElement);
             }
+            ModDescription NewModDescription = new ModDescription();
+            NewModDescription.ShortDesc = Model.ShortDescription;
+            NewModDescription.LongDesc = Model.ShortDescription;
+            ModSpecs.ModDescription = NewModDescription;
+
+            ModSpecs.Tags = new string[0];
             
             /* Publicity */
             

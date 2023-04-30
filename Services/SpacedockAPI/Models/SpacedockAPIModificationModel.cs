@@ -20,7 +20,7 @@ namespace ToucanServices.SpacedockAPI.Models
     public struct SpacedockAPIModificationVersionsModel
     {
         [JsonProperty("friendly_version")] public string FriendlyVersion { get; set; }
-        [JsonProperty("name")] public string GameVersion { get; set; }
+        [JsonProperty("game_version")] public string GameVersion { get; set; }
         [JsonProperty("id")] public ulong Id { get; set; }
         [JsonProperty("created")] public string Created { get; set; }
         [JsonProperty("download_path")] public string DownloadPath { get; set; }
