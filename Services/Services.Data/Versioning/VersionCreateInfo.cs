@@ -1,6 +1,14 @@
-﻿using System.Text.RegularExpressions;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Net.Http;
+using System.Threading;
+using System.Threading.Tasks;
 
-namespace ToucanServices.Data.Versioning
+using System.Text.RegularExpressions;
+
+namespace ToucanServices.Services.Data.Versioning
 {
     /// <summary>
     /// The default for the toucan server is semantic. In the toucan client however it will be arbitrary just due to how spacedock handles
@@ -132,12 +140,12 @@ namespace ToucanServices.Data.Versioning
         /// </summary>
         /// <param name="VersionString"></param>
         /// <returns>A create info with the correct information.</returns>
-        public static VersionCreateInfo FromString(string VersionString) 
+        public static VersionCreateInfo FromString(string VersionString)
         {
             try
             {
                 VersionCreateInfo NewSemanticVersionCreateInfo = new VersionCreateInfo(VersioningType.Semantic);
-                
+
                 // Sets the prefix
                 Regex VersionRegex = new Regex("^([a-zA-Z]*)?(.*)$");
                 Match VersionMatch = VersionRegex.Match(VersionString);
@@ -146,17 +154,17 @@ namespace ToucanServices.Data.Versioning
 
                 // Version Parts
                 string[] VersionPartsString = VersionString.Split(".");
-                NewSemanticVersionCreateInfo.VersionParts = new UInt32[VersionPartsString.Length];
+                NewSemanticVersionCreateInfo.VersionParts = new uint[VersionPartsString.Length];
 
                 for (int i = 0; i < VersionPartsString.Length; i++)
                 {
-                    if (i == (VersionPartsString.Length - 1))
+                    if (i == VersionPartsString.Length - 1)
                     {
                         VersionPartsString[i] = VersionPartsString[i].Split("-")[0];  // Removes the pre release version identifier from the last version part
                         VersionPartsString[i] = VersionPartsString[i].Split("+")[0];  // Removes the build metadata from the last version part.
                     }
 
-                    NewSemanticVersionCreateInfo.VersionParts[i] = UInt32.Parse(VersionPartsString[i]);
+                    NewSemanticVersionCreateInfo.VersionParts[i] = uint.Parse(VersionPartsString[i]);
                 }
 
                 // Version Identifier
@@ -170,7 +178,7 @@ namespace ToucanServices.Data.Versioning
                 NewSemanticVersionCreateInfo.BuildMetadata = string.Join("+", BuildMetadataString);
 
                 return NewSemanticVersionCreateInfo;
-            } 
+            }
             catch
             {
                 VersionCreateInfo AbortInfo = new VersionCreateInfo(VersioningType.Arbitrary);

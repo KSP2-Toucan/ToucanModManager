@@ -3,9 +3,10 @@ using Avalonia.ReactiveUI;
 using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-using ToucanAPI.Data;
-using ToucanAPI;
 using System.Threading.Tasks;
+using System.Globalization;
+using ToucanServices.Services.API.Models;
+using ToucanServices.Services.Data;
 
 namespace ToucanUI
 {
@@ -24,12 +25,19 @@ namespace ToucanUI
             BuildAvaloniaApp()
                 .StartWithClassicDesktopLifetime(args);
 
-            MIToucanCreateInfo SpacedockCreateInfo = new MIToucanCreateInfo();
-            SpacedockCreateInfo.InstallType = InstallType.SPACEDOCK;
-            SpacedockCreateInfo.ToucanModificationId = 0;
+            /* Browse */
 
-            MIToucan SpacedockMIToucan = new MIToucan(SpacedockCreateInfo);
-            SpacedockMIToucan = await ToucanUtilities.PopulateMIToucan(SpacedockMIToucan);
+            ToucanServices.Services.Data.Debugging.ServiceResult<ServicesBrowseModel> ServicesBrowseModelServiceResult
+                = await ToucanServices.Services.API.ServicesBrowse.Browse(BrowseCategories.TOP, 12, SortBy.NAME, SortingDirection.ASC, 20, AvailableApis.Spacedock); // Retrieval 
+
+            if (!ServicesBrowseModelServiceResult.IsSuccess) Console.WriteLine(ServicesBrowseModelServiceResult.Message);  // Checks 
+
+            /* Modification */
+
+            ToucanServices.Services.Data.Debugging.ServiceResult<ServicesModificationModel> ServicesModificationModelServiceResult // Retrieval 
+                = await ToucanServices.Services.API.ServicesModification.Modification("3384", AvailableApis.Spacedock);
+
+            if (!ServicesModificationModelServiceResult.IsSuccess) Console.WriteLine(ServicesModificationModelServiceResult.Message); // Checks 
 
             return 0;
         }

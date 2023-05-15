@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Text;
+using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
+
 using Newtonsoft.Json;
 
-namespace ToucanServices.ToucanAPI.Models
+namespace ToucanServices.Services.API.Models
 {
-    /* Structs generate by ChatGPT but has some tweaking by Eekk2 */
     public struct MetadataSpecs
     {
         [JsonProperty("metadata_version")]
@@ -23,22 +25,22 @@ namespace ToucanServices.ToucanAPI.Models
         public string InstallPath { get; set; }
     }
 
-    public struct ModVersion
-    {
-        [JsonProperty("version_parts")]
-        public uint[] VersionParts;
-
-        [JsonProperty("version_identifier")]
-        public string VersionIdentifier { get; set; }
-
-        [JsonProperty("build_metadata")]
-        public string BuildMetadata { get; set; }
-    }
-
     public struct ModVersionElement
     {
-        [JsonProperty("mod_versions")]
-        public ModVersion ModVersion { get; set; }
+        [JsonProperty("mod_version")]
+        public Services.Data.Versioning.Version ModVersion { get; set; }
+
+        [JsonProperty("game_version")]
+        public Services.Data.Versioning.Version GameVersion { get; set; }
+
+        [JsonProperty("download_path")]
+        public string DownloadUrl { get; set; }
+
+        [JsonProperty("changelog")]
+        public string Changelog { get; set; }
+
+        [JsonProperty("downloads")]
+        public uint Downloads { get; set; }
     }
 
     public struct ModDescription
@@ -54,6 +56,9 @@ namespace ToucanServices.ToucanAPI.Models
     {
         [JsonProperty("mod_name")]
         public string ModName { get; set; }
+
+        [JsonProperty("mod_id")]
+        public string ModId { get; set; }
 
         [JsonProperty("mod_version_elements")]
         public List<ModVersionElement> ModVersionElements { get; set; }
@@ -95,7 +100,7 @@ namespace ToucanServices.ToucanAPI.Models
         public bool Verified { get; set; }
 
         [JsonProperty("downloads")]
-        public uint Downloads { get; set; }
+        public ulong Downloads { get; set; }
 
         [JsonProperty("upvotes")]
         public uint Upvotes { get; set; }
@@ -104,7 +109,7 @@ namespace ToucanServices.ToucanAPI.Models
         public uint Downvotes { get; set; }
     }
 
-    struct ToucanAPIModificationModel
+    public struct ServicesModificationModel
     {
         [JsonProperty("metadata_specs")]
         public MetadataSpecs MetadataSpecs { get; set; }
@@ -121,6 +126,4 @@ namespace ToucanServices.ToucanAPI.Models
         [JsonProperty("statistics")]
         public Statistics Statistics { get; set; }
     }
-
 }
-

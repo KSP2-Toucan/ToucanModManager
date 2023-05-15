@@ -1,9 +1,13 @@
 ﻿using Newtonsoft.Json;
-using ToucanServices.Data;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace ToucanServices.SpacedockAPI.Models
+namespace ToucanServices.Services.API.Models.Spacedock
 {
-    public struct ResultVersion
+    public struct SpacedockBrowseResultVersion
     {
         [JsonProperty("friendly_version")]
         public string ModVersion { get; set; }
@@ -24,7 +28,7 @@ namespace ToucanServices.SpacedockAPI.Models
         public UInt32 Downloads { get; set; }
     }
 
-    public struct Result
+    public struct SpacedockBrowseResult
     {
         [JsonProperty("name")] public string Name { get; set; }
         [JsonProperty("id")] public UInt32 Id { get; set; }
@@ -37,17 +41,17 @@ namespace ToucanServices.SpacedockAPI.Models
         [JsonProperty("license")] public string License { get; set; }
         [JsonProperty("website")] public string Website { get; set; }
         [JsonProperty("donations")] public string Donations { get; set; }
-        [JsonProperty("source_code")] public string SourceCode{ get; set; }
+        [JsonProperty("source_code")] public string SourceCode { get; set; }
         [JsonProperty("url")] public string Url { get; set; }
-        [JsonProperty("versions")] public List<ResultVersion> Versions { get; set; }
+        [JsonProperty("versions")] public List<SpacedockBrowseResultVersion> Versions { get; set; }
     }
 
-    public struct SpacedockAPIBrowseModel
+    public struct SpacedockBrowseModel
     {
         [JsonProperty("total")] public UInt32 Total { get; set; }
         [JsonProperty("count")] public UInt32 Count { get; set; }
         [JsonProperty("pages")] public UInt32 Pages { get; set; }
         [JsonProperty("page")] public UInt32 Page { get; set; }
-        [JsonProperty("result")] public Result[] Results { get; set; }
+        [JsonProperty("result")] public SpacedockBrowseResult[] Results { get; set; }
     }
 }

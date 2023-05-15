@@ -1,4 +1,12 @@
-﻿namespace ToucanServices.Data.Versioning
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Net.Http;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace ToucanServices.Services.Data.Versioning
 {
     public class Version : IComparable<Version>
     {

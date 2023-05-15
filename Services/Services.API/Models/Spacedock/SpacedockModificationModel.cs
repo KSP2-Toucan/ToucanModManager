@@ -14,7 +14,7 @@
  *  the url where you can download it.
  */
 
-namespace ToucanServices.SpacedockAPI.Models
+namespace ToucanServices.Services.API.Models.Spacedock
 {
 
     public struct SpacedockAPIModificationVersionsModel
@@ -28,7 +28,7 @@ namespace ToucanServices.SpacedockAPI.Models
         [JsonProperty("downloads")] public ulong Downloads { get; set; }
     }
 
-    public struct SpacedockAPIModificationModel
+    public struct SpacedockModificationModel
     {
         [JsonProperty("name")] public string Name { get; set; }
         [JsonProperty("id")] public ulong Id { get; set; }
