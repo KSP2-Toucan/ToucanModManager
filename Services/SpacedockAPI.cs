@@ -18,7 +18,8 @@ namespace ToucanUI.Services
         // =====================
         private const string BROWSE_URL = "https://spacedock.info/api/browse";
         private const string MOD_URL = "https://spacedock.info/api/mod";
-        private const string GAME_ID = "&game_id=22407";
+        /*private const string GAME_ID = "&game_id=22407";*/
+        private const string GAME_ID = "&game_id=3102";
         private readonly HttpClient _client;
 
         public enum Category

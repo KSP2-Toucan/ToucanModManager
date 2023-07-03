@@ -32,7 +32,7 @@ namespace ToucanUI.ViewModels
         // =====================
         SpacedockAPI api = new SpacedockAPI();
         private readonly ConfigurationManager _configManager;
-        InstallManager installer = new InstallManager();
+        KSP1InstallManager installer = new KSP1InstallManager();
 
 
 
