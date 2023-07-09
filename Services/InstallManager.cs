@@ -23,7 +23,7 @@ namespace ToucanUI.Services
     public class InstallManager
     {
         ConfigurationManager config = new ConfigurationManager();
-        SpacedockAPI api = new SpacedockAPI();
+        SpacedockAPI api = new SpacedockAPI(SelectedGame.KSP1);
 
         private readonly int BepinexId = 3277;
         private readonly int UitkId = 3363;
@@ -37,6 +37,12 @@ namespace ToucanUI.Services
             Installed,
             NotInstalled,
             Error
+        }
+
+        public enum SelectedGame
+        {
+            KSP1,
+            KSP2
         }
 
         public InstallManager()

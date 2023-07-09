@@ -25,14 +25,16 @@ namespace ToucanUI.ViewModels
         // =====================
         public MainWindowViewModel MainViewModel { get; }
 
-
+        InstallManager installer = new InstallManager();
+       
 
         // =====================
         // SERVICES
         // =====================
-        SpacedockAPI api = new SpacedockAPI();
+        SpacedockAPI api = new SpacedockAPI(InstallManager.SelectedGame.KSP1);
+
         private readonly ConfigurationManager _configManager;
-        KSP1InstallManager installer = new KSP1InstallManager();
+       
 
 
 
@@ -206,6 +208,8 @@ namespace ToucanUI.ViewModels
         // =====================
         public ModlistViewModel(MainWindowViewModel mainViewModel)
         {
+
+          
 
             MainViewModel = mainViewModel;
             ViewState = ViewStateEnum.Classic;

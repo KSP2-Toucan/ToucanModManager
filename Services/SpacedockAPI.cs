@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
+using static ToucanUI.Services.InstallManager;
 
 // This API is being used temporarily, until we get our own database and API up and running which will greatly simplify things
 
@@ -19,8 +20,10 @@ namespace ToucanUI.Services
         private const string BROWSE_URL = "https://spacedock.info/api/browse";
         private const string MOD_URL = "https://spacedock.info/api/mod";
         /*private const string GAME_ID = "&game_id=22407";*/
-        private const string GAME_ID = "&game_id=3102";
+        private string GAME_ID;
         private readonly HttpClient _client;
+
+       
 
         public enum Category
         {
@@ -33,9 +36,26 @@ namespace ToucanUI.Services
         // =====================
         // CONSTRUCTOR
         // =====================
-        public SpacedockAPI()
+        public SpacedockAPI(SelectedGame Game)
         {
             _client = new HttpClient { Timeout = TimeSpan.FromSeconds(10) };
+
+            //Switch case determines the selected game and sets the gameID accordingly
+            
+            switch(Game)
+            {
+                case SelectedGame.KSP1:
+                    {
+                        GAME_ID = "&game_id=3102";
+                        break;
+                    }
+                case SelectedGame.KSP2:
+                    {
+                        GAME_ID = "&game_id=22407";
+                        break;
+                    }
+
+            }
         }
 
 
