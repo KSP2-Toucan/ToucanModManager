@@ -1,4 +1,4 @@
-# Toucan Mod Manager (v2.0.0)
+# Toucan Mod Manager (v2.0.1)
 
 ![image](https://github.com/KSP2-Toucan/ToucanModManager/assets/1657477/f375a6e1-4b26-4586-8ee1-cd65e480fce3)
 
