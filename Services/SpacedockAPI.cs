@@ -50,7 +50,7 @@ namespace ToucanUI.Services
             try
             {
                 // Request mod data from the API using the provided id
-                var url = $"{MOD_URL}/{id}?{GAME_ID}";
+                var url = $"{MOD_URL}/{id}"; 
                 //Trace.WriteLine($"Requesting mod data from {url}");
                 var response = await _client.GetAsync(url);
                 //Trace.WriteLine($"Response status code: {response.StatusCode}");

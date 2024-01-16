@@ -105,7 +105,7 @@ namespace ToucanUI.ViewModels
         }
 
 
-        // =====================
+        // 
         // Commands
         // =====================
 
@@ -166,6 +166,7 @@ namespace ToucanUI.ViewModels
         // Run at startup to check if KSP2 and BepInEx installed
         private async void CheckValidGameFound()
         {
+
             // If a valid game path is found
             if (CheckGameInstallPath())
             {
@@ -192,7 +193,6 @@ namespace ToucanUI.ViewModels
                             BepInExState = BepInExStatusEnum.Installed;
                             InitializeInstaller();
                             ValidGameFound = true;
-                            ModlistVM.FetchMods(SpacedockAPI.Category.All);
                         }
                         else
                         {
@@ -216,6 +216,10 @@ namespace ToucanUI.ViewModels
             {
                await ShowNoGameFoundMessageBox();
             }
+
+            // Fetch the modlist
+            ModlistVM.FetchMods(SpacedockAPI.Category.All);
+
         }
 
         private void InitializeGameInstallPath()

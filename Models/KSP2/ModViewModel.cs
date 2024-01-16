@@ -95,6 +95,7 @@ namespace ToucanUI.Models.KSP2
         // Fetched mod constructor
         public ModViewModel(Mod mod)
         {
+  
             ModObject = mod;
 
             // Initialize VersionViewModels collection
@@ -127,7 +128,6 @@ namespace ToucanUI.Models.KSP2
             Progress = 0;
 
             ModState = ModStateEnum.NotInstalled;
-
 
         }
 

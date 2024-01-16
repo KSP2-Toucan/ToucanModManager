@@ -227,7 +227,7 @@ namespace ToucanUI.ViewModels
         {
 
             MainViewModel = mainViewModel;
-            ViewState = ViewStateEnum.Classic;
+            ViewState = ViewStateEnum.Grid;
 
             DownloadModCommand = ReactiveCommand.Create<ModViewModel>(mod => DownloadModAsync(mod), mainViewModel.WhenAnyValue(x => x.ValidGameFound));
             CancelDownloadModCommand = ReactiveCommand.Create<ModViewModel>(CancelSingleDownload);
@@ -260,7 +260,7 @@ namespace ToucanUI.ViewModels
 
 
             // Fetch list of mods from spacedock api
-            FetchMods(SpacedockAPI.Category.All);
+            //FetchMods(SpacedockAPI.Category.All);
 
             var observableSearchFilter = this.WhenAnyValue(viewModel => viewModel.SearchText).Select(SearchNameAndAuthor);
             var InstalledFilter = this.WhenAnyValue(x => x.MainViewModel.ControlPanelVM.FilterInstalled).Select(SetInstalledFilter);
@@ -391,6 +391,7 @@ namespace ToucanUI.ViewModels
         // Load the mod list from the API
         public async Task FetchMods(SpacedockAPI.Category category)
         {
+            
             // Clear the mod list first
             ModList.Clear();
             SelectedBulkMods.Clear();
@@ -402,7 +403,6 @@ namespace ToucanUI.ViewModels
             // Set the fetching message
             FetchingMessage = _fetchPhrases[new Random().Next(0, _fetchPhrases.Count)];
             FetchState = FetchStateEnum.Fetching;
-
 
             // Get the modlist from the API
             var mods = await api.GetMods((currentPage, totalPages) =>

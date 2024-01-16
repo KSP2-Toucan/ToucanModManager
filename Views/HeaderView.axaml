@@ -31,6 +31,19 @@
               <MenuItem Header="Check for update"
                         Command="{Binding ToucanUpdateCheckCommand}"/>
 
+              <MenuItem Header="Disable Mods" Command="{Binding ToucanDisableModsCommand}">
+                <MenuItem.Icon>
+                  <CheckBox BorderThickness="0"
+                            IsHitTestVisible="False"
+                            Command="{Binding ToucanDisableModsCommand}"
+                            ClipToBounds = "False"
+                            IsChecked="{Binding ModsEnabled}">
+                    
+                  </CheckBox>
+                </MenuItem.Icon>
+                
+              </MenuItem>
+              
               <Separator></Separator>
 
               <MenuItem Header="Exit"

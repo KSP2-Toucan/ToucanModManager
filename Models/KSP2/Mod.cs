@@ -34,6 +34,7 @@ public class Mod
     [JsonProperty("default_version_id")]
     public int DefaultVersionId { get; set; }
 
+    [JsonConverter(typeof(IgnoreErrorConverter))]
     [JsonProperty("shared_authors")]
     public List<string> SharedAuthors { get; set; }
 
@@ -88,5 +89,6 @@ public class Mod
 
         return mod;
     }
+
 
 }

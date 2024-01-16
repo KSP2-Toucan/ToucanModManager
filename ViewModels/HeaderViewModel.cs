@@ -62,6 +62,8 @@ namespace ToucanUI.ViewModels
         // Help
         public ReactiveCommand<Unit, Unit> ToucanUpdateCheckCommand { get; }
 
+        public ReactiveCommand<Unit, Unit> ToucanDisableModsCommand { get; }
+
 
         // =====================
         // CONSTRUCTOR
@@ -80,6 +82,7 @@ namespace ToucanUI.ViewModels
             // Commands
 
             ToucanUpdateCheckCommand = ReactiveCommand.CreateFromTask(IsToucanUpdateAvailable);
+            ToucanDisableModsCommand = ReactiveCommand.Create(DisableMods);
             ScanKSP2InstallLocationsCommand = ReactiveCommand.CreateFromTask(ScanKSP2InstallLocations);
             SetGameInstallPathCommand = ReactiveCommand.CreateFromTask(SetGameInstallPath);
             OpenGamePathDirectoryCommand = ReactiveCommand.Create(OpenGamePathFolderAsync);
@@ -128,6 +131,22 @@ namespace ToucanUI.ViewModels
                 throw new NotSupportedException("Unsupported OS");
             }
             return osZipSuffix;
+        }
+
+
+        private bool _modsEnabled = false;
+
+        public bool ModsEnabled
+        {
+            get => _modsEnabled;
+            set => this.RaiseAndSetIfChanged(ref _modsEnabled, value);
+        }
+
+        public void DisableMods()
+        {
+            Debug.WriteLine("Mods Status:" + ModsEnabled);
+            ModsEnabled = !ModsEnabled;
+            MainViewModel.installer.DisableBepInEx(ModsEnabled);
         }
 
         // Open game path directory

@@ -28,6 +28,7 @@ namespace ToucanUI.Services
         private readonly int UitkId = 3363;
         string PluginsLocation;
         string BepInExLocation;
+        string DisabledBepInExLocation;
         string KSProot;
         string ToucanFolder;
 
@@ -49,6 +50,7 @@ namespace ToucanUI.Services
                     CreateToucanFolder(); // Call the method to create the Toucan folder
                     PluginsLocation = Path.Combine(KSProot, "BepInEx", "plugins");
                     BepInExLocation = Path.Combine(KSProot, "BepInEx");
+                    DisabledBepInExLocation = Path.Combine(KSProot, "_BepInEx");
 
                 }
                 else
@@ -184,6 +186,7 @@ namespace ToucanUI.Services
                         // Set the Mod State to Installed and set the version to installed
                         mod.ModState = ModViewModel.ModStateEnum.Installed;
                         mod.SelectedVersionViewModel.VersionObject.IsInstalled = true;
+                        Trace.WriteLine($"[INFO] Successfully installed UITK...");
 
                         WriteToManifest(fileName, mod);
                         MoveToPlugins(fileName, mod);
@@ -198,6 +201,7 @@ namespace ToucanUI.Services
                     else
                     {
                         mod.ModState = ModViewModel.ModStateEnum.NotInstalled;
+                        Trace.WriteLine($"[INFO] Could not install UITK...");
 
                         tcs.TrySetCanceled();
                     }
@@ -382,17 +386,17 @@ namespace ToucanUI.Services
             }
         }
 
-
         public async Task<BepInExStatusEnum> CheckIfBepInEx()
         {
             try
             {
-                if (Directory.Exists(BepInExLocation))
+                if (Directory.Exists(DisabledBepInExLocation) || Directory.Exists(BepInExLocation))
                 {
                     // Check for the existence of BepInEx.dll in the core directory
-                    if (Directory.Exists(Path.Combine(BepInExLocation, "core")) && File.Exists(Path.Combine(BepInExLocation, "core", "BepInEx.dll")))
+                    if ((Directory.Exists(Path.Combine(BepInExLocation, "core")) && File.Exists(Path.Combine(BepInExLocation, "core", "BepInEx.dll"))) || (Directory.Exists(Path.Combine(DisabledBepInExLocation, "core")) && File.Exists(Path.Combine(DisabledBepInExLocation, "core", "BepInEx.dll")))) 
                     {
-                        if (!Directory.Exists(PluginsLocation))
+                        //Don't want to create another plugins folder if BepInEx is in disabled state
+                        if (!Directory.Exists(PluginsLocation) && !Directory.Exists(DisabledBepInExLocation))
                         {
                             Directory.CreateDirectory(PluginsLocation);
                         }
@@ -480,8 +484,8 @@ namespace ToucanUI.Services
 
                     // Also need to Install UITK which is a dependency for BepInEx
                     modlistViewModel.FetchingMessage = "Installing UITK...";
+                    Trace.WriteLine($"[INFO] Installing UITK (ID:{UitkId})");
                     ModViewModel UiTKMod = new ModViewModel(await api.GetMod(UitkId));
-
                     // Check if UiTK is already in the modList
                     var existingUiTK = modList.FirstOrDefault(m => m.ModObject.Id == UiTKMod.ModObject.Id);
                     if (existingUiTK != null)
@@ -582,6 +586,44 @@ namespace ToucanUI.Services
 
                 // An error occurred, so the deletion was not successful
                 return false;
+            }
+        }
+
+        public bool DisableBepInEx(bool status)
+        {
+            string DisabledBepInExLocation = Path.Combine(KSProot, "_BepInEx");
+
+            if (status)
+            {
+                try
+                {
+                    Directory.Move(BepInExLocation, DisabledBepInExLocation);
+                    return true;
+                }
+                catch (Exception e)
+                {
+                    // Log the error
+                    Trace.WriteLine($"[ERROR] Failed to rename BepInEx! {e.Message}");
+
+                    // An error occurred, so the deletion was not successful
+                    return false;
+                }
+            }
+            else
+            {
+                try
+                {
+                    Directory.Move(DisabledBepInExLocation, BepInExLocation);
+                    return true;
+                }
+                catch (Exception e)
+                {
+                    // Log the error
+                    Trace.WriteLine($"[ERROR] Failed to rename BepInEx! {e.Message}");
+
+                    // An error occurred, so the deletion was not successful
+                    return false;
+                }
             }
         }
 

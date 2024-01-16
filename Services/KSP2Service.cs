@@ -32,6 +32,12 @@ namespace ToucanUI.Services
             {
                 version = GetFileVersionMacOS(ksp2Path);
             }
+
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            {
+                version = GetFileVersionLinux(ksp2Path);
+            }
+
             else
             {
                 FileVersionInfo versionInfo = FileVersionInfo.GetVersionInfo(ksp2Path);
@@ -101,9 +107,15 @@ namespace ToucanUI.Services
             {
                 fileName = "KSP2_x64";
             }
-            else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX) || RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
             {
                 fileName = "KSP2";
+            }
+
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            {
+                fileName = "KSP2_x64";
             }
             else
             {
@@ -136,7 +148,39 @@ namespace ToucanUI.Services
             return "";
         }
 
+        // Get the version number of the KSP2 executable for Linux
+        private string GetFileVersionLinux(string filePath)
+        {
+            try
+            {
+                ProcessStartInfo startInfo = new ProcessStartInfo()
+                {
+                    FileName = "exiftool",
+                    Arguments = $"-ProductVersion {filePath}",
+                    UseShellExecute = false,
+                    RedirectStandardOutput = true,
+                    CreateNoWindow = true
+                };
 
+                using (Process process = Process.Start(startInfo))
+                {
+                    using (StreamReader reader = process.StandardOutput)
+                    {
+                        string result = reader.ReadToEnd();
+                        return result.Split(':')[0].Trim();
+                    }
+                }
+            }
+
+            catch (Exception ex)
+            {
+                Trace.WriteLine($"[ERROR]: {ex}");
+                return "";
+            }
+
+        }
+
+        // Get the version number for MacOS
         private string GetFileVersionMacOS(string filePath)
         {
             try
